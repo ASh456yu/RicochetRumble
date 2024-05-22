@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="file.css">
+</head>
+
+<body>
+    <div id="backMusic" hidden></div>
+    <div id="winner" hidden>None</div>
+    <div id="scoreboard" hidden>
+        <div id="win" hidden><p class="moves">Red Moves</p><div id="movesr"></div></div>
+        <div id="opponent" hidden><p class="moves">Blue Moves</p><div id="movesb"></div></div>
+    </div>
+    <div class="headings" id="heading">
+        <img src="images/more.avif" id="imga" alt="more">
+        <p class="p1">Turn: <span id="s1" class="BlueTurn">Blue</span></p>
+        <div id="timer">00:00</div>
+        <div id="undoandredo"><img id="undo" src="images/undo.jpg" alt="undo"><img id="redo" src="images/redo.jpg" alt="redo"></div>
+    </div>
+    <p id="p2" hidden>Nothing</p>
+    <div id="div">
+
+    </div>
+    
+    <div class="turn" id="turns">
+        <button id="rot1" class="rot" type="button" hidden>Left</button>
+        <button id="rot2" class="rot" type="button" hidden>Right</button>
+        <button id="rot3" class="rot" type="button" hidden>Move</button>
+    </div>
+    <div id="controller" hidden>
+        <button type="button" id="resume" class="homeBtn">Resume</button>
+        <button type="button" id="restart" class="homeBtn">Restart</button>
+        <button type="button" id="home" class="homeBtn">Home</button>
+    </div>
+    <script src="file.js"></script>
+</body>
+
+</html>
