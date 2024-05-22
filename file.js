@@ -13,7 +13,7 @@ window.onload = function () {
     localStorage.removeItem('bullet')
 
     if (gameMode == 2 || gameMode == 3) {
-        document.getElementById('backMusic').innerHTML = '<audio id="myaudio" autoplay loop src="audios/music.mpeg"></audio>'
+        document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
     }
 
     if (gameMode == null) {
@@ -610,43 +610,44 @@ window.onload = function () {
             if (dir == 'right') {
 
                 recordGame('R', 'blue', ids, ids, 1, minutes + ':' + seconds, 'r', null)
-                s1 = x.borderLeft
-                s2 = x.borderTop
-                s3 = x.borderBottom
-                s4 = x.borderRight
-                if (s4 != '' && s2 != '') {
+                leftdir = x.borderLeft
+                topdir = x.borderTop
+                bottomdir = x.borderBottom
+                rightdir = x.borderRight
+                
+                if (bottomdir == '80px solid blue' && rightdir == '70px solid transparent') {
                     document.getElementById('blueR' + ids).style.removeProperty('border-right')
                     document.getElementById('blueR' + ids).style.borderLeft = '70px solid transparent'
-                } else if (s2 != '' && s1 != '') {
-                    document.getElementById('blueR' + ids).style.removeProperty('border-top')
-                    document.getElementById('blueR' + ids).style.borderBottom = '80px solid blue'
-                } else if (s1 != '' && s3 != '') {
-                    document.getElementById('blueR' + ids).style.removeProperty('border-left')
-                    document.getElementById('blueR' + ids).style.borderRight = '70px solid transparent'
-                } else if (s4 != '' && s3 != '') {
+                } else if (bottomdir == '80px solid blue' && leftdir == '70px solid transparent') {
                     document.getElementById('blueR' + ids).style.removeProperty('border-bottom')
                     document.getElementById('blueR' + ids).style.borderTop = '80px solid blue'
+                } else if (topdir == '80px solid blue' && leftdir == '70px solid transparent') {
+                    document.getElementById('blueR' + ids).style.removeProperty('border-left')
+                    document.getElementById('blueR' + ids).style.borderRight = '70px solid transparent'
+                } else if (topdir == '80px solid blue' && rightdir == '70px solid transparent') {
+                    document.getElementById('blueR' + ids).style.removeProperty('border-top')
+                    document.getElementById('blueR' + ids).style.borderBottom = '80px solid blue'
                 }
                 if (redoNumber == 0) {
                     bulletOfCanon(ids)
                 }
             } else if (dir == 'left') {
                 recordGame('R', 'blue', ids, ids, 1, minutes + ':' + seconds, 'l', null)
-                s1 = x.borderLeft
-                s2 = x.borderTop
-                s3 = x.borderBottom
-                s4 = x.borderRight
-
-                if (s4 != '' && s2 != '') {
-                    document.getElementById('blueR' + ids).style.removeProperty('border-top')
-                    document.getElementById('blueR' + ids).style.borderBottom = '80px solid blue'
-                } else if (s3 != '' && s4 != '') {
-                    document.getElementById('blueR' + ids).style.removeProperty('border-right')
-                    document.getElementById('blueR' + ids).style.borderLeft = '70px solid transparent'
-                } else if (s1 != '' && s3 != '') {
+                leftdir = x.borderLeft
+                topdir = x.borderTop
+                bottomdir = x.borderBottom
+                rightdir = x.borderRight
+                
+                if (bottomdir == '80px solid blue' && rightdir == '70px solid transparent') {
                     document.getElementById('blueR' + ids).style.removeProperty('border-bottom')
                     document.getElementById('blueR' + ids).style.borderTop = '80px solid blue'
-                } else if (s2 != '' && s1 != '') {
+                } else if (topdir == '80px solid blue' && rightdir == '70px solid transparent') {
+                    document.getElementById('blueR' + ids).style.removeProperty('border-right')
+                    document.getElementById('blueR' + ids).style.borderLeft = '70px solid transparent'
+                } else if (topdir == '80px solid blue' && leftdir == '70px solid transparent') {
+                    document.getElementById('blueR' + ids).style.removeProperty('border-top')
+                    document.getElementById('blueR' + ids).style.borderBottom = '80px solid blue'
+                } else if (bottomdir == '80px solid blue' && leftdir == '70px solid transparent') {
                     document.getElementById('blueR' + ids).style.removeProperty('border-left')
                     document.getElementById('blueR' + ids).style.borderRight = '70px solid transparent'
                 }
@@ -664,44 +665,44 @@ window.onload = function () {
             x = document.getElementById('redR' + ids).style
             if (dir == 'right') {
                 recordGame('R', 'red', ids, ids, 1, minutes + ':' + seconds, 'r', null)
-                s1 = x.borderLeft
-                s2 = x.borderTop
-                s3 = x.borderBottom
-                s4 = x.borderRight
-
-                if (s4 != '' && s2 != '') {
+                leftdir = x.borderLeft
+                topdir = x.borderTop
+                bottomdir = x.borderBottom
+                rightdir = x.borderRight
+                
+                if (bottomdir == '80px solid red' && rightdir == '70px solid transparent') {
                     document.getElementById('redR' + ids).style.removeProperty('border-right')
                     document.getElementById('redR' + ids).style.borderLeft = '70px solid transparent'
-                } else if (s2 != '' && s1 != '') {
-                    document.getElementById('redR' + ids).style.removeProperty('border-top')
-                    document.getElementById('redR' + ids).style.borderBottom = '80px solid red'
-                } else if (s1 != '' && s3 != '') {
+                } else if (bottomdir == '80px solid red' && leftdir == '70px solid transparent') {
+                    document.getElementById('redR' + ids).style.removeProperty('border-bottom')
+                    document.getElementById('redR' + ids).style.borderTop = '80px solid blue'
+                } else if (topdir == '80px solid red' && leftdir == '70px solid transparent') {
                     document.getElementById('redR' + ids).style.removeProperty('border-left')
                     document.getElementById('redR' + ids).style.borderRight = '70px solid transparent'
-                } else if (s4 != '' && s3 != '') {
-                    document.getElementById('redR' + ids).style.removeProperty('border-bottom')
-                    document.getElementById('redR' + ids).style.borderTop = '80px solid red'
+                } else if (topdir == '80px solid red' && rightdir == '70px solid transparent') {
+                    document.getElementById('redR' + ids).style.removeProperty('border-top')
+                    document.getElementById('redR' + ids).style.borderBottom = '80px solid blue'
                 }
                 if (redoNumber == 0) {
                     bulletOfCanon(ids)
                 }
             } else if (dir == 'left') {
                 recordGame('R', 'red', ids, ids, 1, minutes + ':' + seconds, 'l', null)
-                s1 = x.borderLeft
-                s2 = x.borderTop
-                s3 = x.borderBottom
-                s4 = x.borderRight
-
-                if (s4 != '' && s2 != '') {
-                    document.getElementById('redR' + ids).style.removeProperty('border-top')
-                    document.getElementById('redR' + ids).style.borderBottom = '80px solid red'
-                } else if (s3 != '' && s4 != '') {
+                leftdir = x.borderLeft
+                topdir = x.borderTop
+                bottomdir = x.borderBottom
+                rightdir = x.borderRight
+                
+                if (bottomdir == '80px solid red' && rightdir == '70px solid transparent') {
+                    document.getElementById('redR' + ids).style.removeProperty('border-bottom')
+                    document.getElementById('redR' + ids).style.borderTop = '80px solid blue'
+                } else if (topdir == '80px solid red' && rightdir == '70px solid transparent') {
                     document.getElementById('redR' + ids).style.removeProperty('border-right')
                     document.getElementById('redR' + ids).style.borderLeft = '70px solid transparent'
-                } else if (s1 != '' && s3 != '') {
-                    document.getElementById('redR' + ids).style.removeProperty('border-bottom')
-                    document.getElementById('redR' + ids).style.borderTop = '80px solid red'
-                } else if (s2 != '' && s1 != '') {
+                } else if (topdir == '80px solid red' && leftdir == '70px solid transparent') {
+                    document.getElementById('redR' + ids).style.removeProperty('border-top')
+                    document.getElementById('redR' + ids).style.borderBottom = '80px solid blue'
+                } else if (bottomdir == '80px solid red' && leftdir == '70px solid transparent') {
                     document.getElementById('redR' + ids).style.removeProperty('border-left')
                     document.getElementById('redR' + ids).style.borderRight = '70px solid transparent'
                 }
@@ -736,28 +737,22 @@ window.onload = function () {
             if (document.getElementById('div' + params).classList.contains('red')) {
                 document.getElementById('rot1').addEventListener('click', lefto = function () {
                     rotationOfRicochets(params, 'left')
-                    window.scrollBy(0, window.innerHeight)
                 })
                 document.getElementById('rot2').addEventListener('click', righto = function () {
                     rotationOfRicochets(params, 'right')
-                    window.scrollBy(0, window.innerHeight)
                 })
                 document.getElementById('rot3').addEventListener('click', moveo = function () {
                     rotationOfRicochets(params, 'move')
-                    window.scrollBy(0, window.innerHeight)
                 })
             } else {
                 document.getElementById('rot1').addEventListener('click', lefto = function () {
                     rotationOfRicochets(params, 'left')
-                    window.scrollBy(0, -window.innerHeight)
                 })
                 document.getElementById('rot2').addEventListener('click', righto = function () {
                     rotationOfRicochets(params, 'right')
-                    window.scrollBy(0, -window.innerHeight)
                 })
                 document.getElementById('rot3').addEventListener('click', moveo = function () {
                     rotationOfRicochets(params, 'move')
-                    window.scrollBy(0, -window.innerHeight)
                 })
             }
 
@@ -860,29 +855,23 @@ window.onload = function () {
             if (document.getElementById('div' + params).classList.contains('red')) {
                 document.getElementById('rot1').addEventListener('click', lefto = function () {
                     rotationOfSRicochets(params, 'left')
-                    window.scrollBy(0, window.innerHeight)
                 })
                 document.getElementById('rot2').addEventListener('click', righto = function () {
                     rotationOfSRicochets(params, 'right')
-                    window.scrollBy(0, window.innerHeight)
                 })
                 document.getElementById('rot3').addEventListener('click', moveo = function () {
                     rotationOfSRicochets(params, 'move')
-                    window.scrollBy(0, window.innerHeight)
                 })
 
             } else {
                 document.getElementById('rot1').addEventListener('click', lefto = function () {
                     rotationOfSRicochets(params, 'left')
-                    window.scrollBy(0, -window.innerHeight)
                 })
                 document.getElementById('rot2').addEventListener('click', righto = function () {
                     rotationOfSRicochets(params, 'right')
-                    window.scrollBy(0, -window.innerHeight)
                 })
                 document.getElementById('rot3').addEventListener('click', moveo = function () {
                     rotationOfSRicochets(params, 'move')
-                    window.scrollBy(0, -window.innerHeight)
                 })
 
             }
