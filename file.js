@@ -13,7 +13,7 @@ window.onload = function () {
     localStorage.removeItem('bullet')
 
     if (gameMode == 2 || gameMode == 3) {
-        document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
+        // document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
     }
 
     if (gameMode == null) {
@@ -25,6 +25,7 @@ window.onload = function () {
     let lefto;
     let righto;
     let moveo;
+    let swapo;
     let undoNumber = 0;
     let redoNumber = 0;
 
@@ -91,6 +92,44 @@ window.onload = function () {
                     }
 
                 }
+            } else if (document.getElementById('p2').innerText == 'Swapping') {
+                if (document.getElementById('div' + parseInt(i + 1)).style.border == '5px solid green') {
+                    currId = 'div' + parseInt(i + 1)
+                    swappedElementId = document.getElementsByClassName('ToBeSwapped')[0].id
+                    swapPosition(currId, swappedElementId)
+                    document.getElementById(currId).classList.remove('ToBeSwapped')
+                    if (document.getElementById(currId).classList.contains('red')) {
+                        recordGame('R', 'red', swappedElementId.substring(3), currId.substring(3), 2, minutes + ':' + seconds, null, null)
+                    } else {
+                        recordGame('R', 'blue', swappedElementId.substring(3), currId.substring(3), 2, minutes + ':' + seconds, null, null)
+                    }
+                    document.getElementById('p2').innerText == 'Nothing'
+                    tanks = document.getElementsByClassName('Tank')
+                    canons = document.getElementsByClassName('Canon')
+                    sricochets = document.getElementsByClassName('SRicochets')
+                    ricochets = document.getElementsByClassName('Ricochets')
+                    for (let i = 0; i < tanks.length; i++) {
+                        tanks[i].style.removeProperty('border')
+                        tanks[i].style.borderLeft = '8px solid green'
+                    }
+                    for (let i = 0; i < canons.length; i++) {
+                        canons[i].style.removeProperty('border')
+                    }
+                    for (let i = 0; i < sricochets.length; i++) {
+                        sricochets[i].style.removeProperty('border')
+                    }
+                    for (let i = 0; i < ricochets.length; i++) {
+                        ricochets[i].style.removeProperty('border')
+                    }
+                    if (redoNumber == 0) {
+
+                        if (gameMode == 2 || gameMode == 3) {
+                            selectDir(currId.substring(3))
+                        } else {
+                            bulletOfCanon(currId.substring(3), 8);
+                        }
+                    }
+                }
             }
         });
     }
@@ -155,6 +194,10 @@ window.onload = function () {
 
     document.getElementById('div59').innerText = "Canon";
     document.getElementById('div59').classList.add('blue', 'Canon');
+    if (gameMode == 2 || gameMode == 3) {
+        document.getElementById('div3').innerHTML += '<div id="redC" hidden><div id="redTop" style="border-top-left-radius: 10px;border-top-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 10px;height: 20px;background-color:black;"></div><div style = "display: grid;grid-template-columns: auto auto;"><div id="redLeft" style="border-top-left-radius: 10px;border-bottom-left-radius: 10px;width: 25px;height: 10px;background-color:black;"></div><div id="redRight" style="border-bottom-right-radius: 10px;border-top-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 25px;height: 10px;background-color:black;"></div></div><div id="redBottom" style="border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 10px;height: 20px;background-color:black;"></div></div>'
+        document.getElementById('div59').innerHTML += '<div id="blueC" hidden><div id="blueTop" style="border-top-left-radius: 10px;border-top-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 10px;height: 20px;background-color:black;"></div><div style = "display: grid;grid-template-columns: auto auto;"><div id="blueLeft" style="border-top-left-radius: 10px;border-bottom-left-radius: 10px;width: 25px;height: 10px;background-color:black;"></div><div id="blueRight" style="border-bottom-right-radius: 10px;border-top-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 25px;height: 10px;background-color:black;"></div></div><div id="blueBottom" style="border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 10px;height: 20px;background-color:black;"></div></div>'
+    }
 
     let [seconds, minutes] = [60, 1]
     function startTimer() {
@@ -285,11 +328,10 @@ window.onload = function () {
                         col = document.getElementById('div' + y).classList.contains('red') ? 'red' : 'blue'
                         recordGame('C', col, y, params, 0, minutes + ':' + seconds, null, null)
                     }
-
-                    document.getElementById('div' + params).innerText = text
+                    document.getElementById('div' + params).innerHTML = document.getElementById('div' + y).innerHTML
                     document.getElementById('div' + params).classList.add(text)
                     document.getElementById('div' + y).classList.remove(text, 'clicked')
-                    document.getElementById('div' + y).innerText = ''
+                    document.getElementById('div' + y).innerHTML = ''
                 } else {
 
                     if (document.getElementById('div' + y).classList.contains('SRicochets') && document.getElementById('div' + y).classList.contains('red')) {
@@ -341,16 +383,48 @@ window.onload = function () {
 
                 if (redoNumber == 0) {
                     document.getElementById('p2').innerText = 'Running'
-                    bulletOfCanon(params);
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(params)
+                    } else {
+                        bulletOfCanon(params, 8);
+                    }
                 }
 
                 break;
             }
         }
     }
+    let topCanon;
+    let leftCanon;
+    let rightCanon;
+    let bottomCanon;
+    function selectDir(params) {
+        clas = document.getElementById('div' + params).classList
+        if (clas.contains('red')) {
+            x = document.getElementsByClassName('Canon red')
+            color = 'red'
+        } else {
+            x = document.getElementsByClassName('Canon blue')
+            color = 'blue'
+        }
 
-    function bulletOfCanon(params) {
-        tp = 0;
+        document.getElementById(color + "C").hidden = false
+        document.getElementById(color + "Top").addEventListener('click', topCanon = function () {
+            bulletOfCanon(params, -8)
+        })
+        document.getElementById(color + "Left").addEventListener('click', leftCanon = function () {
+            bulletOfCanon(params, -1)
+        })
+        document.getElementById(color + "Right").addEventListener('click', rightCanon = function () {
+            bulletOfCanon(params, 1)
+        })
+        document.getElementById(color + "Bottom").addEventListener('click', bottomCanon = function () {
+            bulletOfCanon(params, 8)
+        })
+    }
+
+    function bulletOfCanon(params, chid) {
+        tp = 0
         clas = document.getElementById('div' + params).classList
         ids = 0
         if (clas.contains('red')) {
@@ -360,25 +434,83 @@ window.onload = function () {
         }
 
         if (clas.contains('red')) {
-            changeId = 8
+            changeId = chid
             htmlStr = '<div id="bulletred"></div>';
             decider = 1
             bulletName = 'bulletred'
             colorToCompare = 'red'
             oppositeColor = 'blue'
         } else if (clas.contains('blue')) {
-            changeId = 8
+            changeId = chid
             htmlStr = '<div id="bulletblue"></div>';
             decider = -1
             bulletName = 'bulletblue'
             colorToCompare = 'blue'
             oppositeColor = 'red'
         }
+        if (gameMode == 2 || gameMode == 3) {
+            if (clas.contains('blue')) {
+                changeId *= (-1)
+            }
+            document.getElementById(colorToCompare + "Top").removeEventListener('click', topCanon);
+            document.getElementById(colorToCompare + "Left").removeEventListener('click', leftCanon);
+            document.getElementById(colorToCompare + "Right").removeEventListener('click', rightCanon);
+            document.getElementById(colorToCompare + "Bottom").removeEventListener('click', bottomCanon);
+            document.getElementById(colorToCompare + "C").hidden = true
+        }
         const intervalId = setInterval(() => {
             ids = ids + (decider * changeId)
             if (((parseInt(x[0].id.substring(3)) + ids) < 65) && ((parseInt(x[0].id.substring(3)) + ids) > 0)) {
                 h = document.getElementById('div' + (parseInt(x[0].id.substring(3)) + ids))
                 document.getElementById('div' + (parseInt(x[0].id.substring(3)) + ids)).insertAdjacentHTML('beforeend', htmlStr);
+                if (gameMode == 2 || gameMode == 3) {
+                    if (decider == 1) {
+                        if (changeId == 8) {
+                            document.getElementById(bulletName).style.height = '20px'
+                            document.getElementById(bulletName).style.width = '10px'
+                            document.getElementById(bulletName).style.borderBottomLeftRadius = '10px'
+                            document.getElementById(bulletName).style.borderBottomRightRadius = '10px'
+                        } else if (changeId == -8) {
+                            document.getElementById(bulletName).style.height = '20px'
+                            document.getElementById(bulletName).style.width = '10px'
+                            document.getElementById(bulletName).style.borderTopLeftRadius = '10px'
+                            document.getElementById(bulletName).style.borderTopRightRadius = '10px'
+                        } else if (changeId == -1) {
+                            document.getElementById(bulletName).style.height = '10px'
+                            document.getElementById(bulletName).style.width = '20px'
+                            document.getElementById(bulletName).style.borderTopLeftRadius = '10px'
+                            document.getElementById(bulletName).style.borderBottomLeftRadius = '10px'
+                        } else if (changeId == 1) {
+                            document.getElementById(bulletName).style.height = '10px'
+                            document.getElementById(bulletName).style.width = '20px'
+                            document.getElementById(bulletName).style.borderTopRightRadius = '10px'
+                            document.getElementById(bulletName).style.borderBottomRightRadius = '10px'
+                        }
+                    } else if (decider == -1) {
+                        if (changeId == 8) {
+                            document.getElementById(bulletName).style.height = '20px'
+                            document.getElementById(bulletName).style.width = '10px'
+                            document.getElementById(bulletName).style.borderTopLeftRadius = '10px'
+                            document.getElementById(bulletName).style.borderTopRightRadius = '10px'
+                        } else if (changeId == -8) {
+                            document.getElementById(bulletName).style.height = '20px'
+                            document.getElementById(bulletName).style.width = '10px'
+                            document.getElementById(bulletName).style.borderBottomLeftRadius = '10px'
+                            document.getElementById(bulletName).style.borderBottomRightRadius = '10px'
+                        } else if (changeId == 1) {
+                            document.getElementById(bulletName).style.height = '10px'
+                            document.getElementById(bulletName).style.width = '20px'
+                            document.getElementById(bulletName).style.borderTopLeftRadius = '10px'
+                            document.getElementById(bulletName).style.borderBottomLeftRadius = '10px'
+                        } else if (changeId == -1) {
+                            document.getElementById(bulletName).style.height = '10px'
+                            document.getElementById(bulletName).style.width = '20px'
+                            document.getElementById(bulletName).style.borderTopRightRadius = '10px'
+                            document.getElementById(bulletName).style.borderBottomRightRadius = '10px'
+                        }
+                    }
+                }
+
                 setTimeout(() => {
                     if (document.getElementById(bulletName)) {
                         document.getElementById(bulletName).remove()
@@ -434,7 +566,7 @@ window.onload = function () {
                 rightdir = p.style.borderRight
                 bottomdir = p.style.borderBottom
                 topdir = p.style.borderTop
-
+                
                 if (topdir == ('80px solid ' + colorToCompare) && rightdir == '70px solid transparent' && changeId == (-1 * decider)) {
                     changeId = (8 * decider)
                 } else if (topdir == ('80px solid ' + colorToCompare) && rightdir == '70px solid transparent' && changeId == (-8 * decider)) {
@@ -491,27 +623,12 @@ window.onload = function () {
                 rightdir = p.style.borderRight
                 bottomdir = p.style.borderBottom
                 topdir = p.style.borderTop
-
-                if (topdir == ('80px solid ' + colorToCompare) && rightdir == '70px solid transparent' && changeId == (-1 * decider)) {
-                } else if (topdir == ('80px solid ' + colorToCompare) && rightdir == '70px solid transparent' && changeId == (-8 * decider)) {
-                } else if (topdir == ('80px solid ' + colorToCompare) && leftdir == '70px solid transparent' && changeId == (1 * decider)) {
-                } else if (topdir == ('80px solid ' + colorToCompare) && leftdir == '70px solid transparent' && changeId == (-8 * decider)) {
-                }
-                else if (bottomdir == ('80px solid ' + colorToCompare) && rightdir == '70px solid transparent' && changeId == (-1 * decider)) {
-                } else if (bottomdir == ('80px solid ' + colorToCompare) && rightdir == '70px solid transparent' && changeId == (8 * decider)) {
-                } else if (bottomdir == ('80px solid ' + colorToCompare) && leftdir == '70px solid transparent' && changeId == (1 * decider)) {
-                } else if (bottomdir == ('80px solid ' + colorToCompare) && leftdir == '70px solid transparent' && changeId == (8 * decider)) {
-                }
-                else if (leftdir == ('80px solid ' + colorToCompare) && bottomdir == '70px solid transparent' && changeId == (-1 * decider)) {
-                } else if (leftdir == ('80px solid ' + colorToCompare) && bottomdir == '70px solid transparent' && changeId == (-8 * decider)) {
-                } else if (leftdir == ('80px solid ' + colorToCompare) && topdir == '70px solid transparent' && changeId == (-1 * decider)) {
-                } else if (leftdir == ('80px solid ' + colorToCompare) && topdir == '70px solid transparent' && changeId == (8 * decider)) {
-                }
-                else if (rightdir == ('80px solid ' + colorToCompare) && bottomdir == '70px solid transparent' && changeId == (-8 * decider)) {
-                } else if (rightdir == ('80px solid ' + colorToCompare) && bottomdir == '70px solid transparent' && changeId == (1 * decider)) {
-                } else if (rightdir == ('80px solid ' + colorToCompare) && topdir == '70px solid transparent' && changeId == (1 * decider)) {
-                } else if (rightdir == ('80px solid ' + colorToCompare) && topdir == '70px solid transparent' && changeId == (8 * decider)) {
-                } else {
+                
+                if (((bottomdir == ('80px solid ' + oppositeColor) && rightdir == '70px solid transparent')||(leftdir == ('80px solid ' + oppositeColor) && topdir == '70px solid transparent')) && (changeId == (-1*decider)||changeId==(8*decider))) {
+                }else if (((bottomdir == ('80px solid ' + oppositeColor) && leftdir == '70px solid transparent')||(rightdir == ('80px solid ' + oppositeColor) && topdir == '70px solid transparent')) && (changeId == (1*decider)||changeId==(8*decider))) {
+                }else if (((topdir == ('80px solid ' + oppositeColor) && rightdir == '70px solid transparent')||(leftdir == ('80px solid ' + oppositeColor) && bottomdir == '70px solid transparent')) && (changeId == (-1*decider)||changeId==(-8*decider))) {
+                }else if (((topdir == ('80px solid ' + oppositeColor) && leftdir == '70px solid transparent')||(rightdir == ('80px solid ' + oppositeColor) && bottomdir == '70px solid transparent')) && (changeId == (1*decider)||changeId==(-8*decider))) {
+                }else{
                     document.getElementById('p2').innerText = 'Nothing'
                     clearInterval(intervalId)
                     restartCounting()
@@ -522,7 +639,6 @@ window.onload = function () {
                     document.getElementById(bulletName).style.removeProperty('top')
                     document.getElementById(bulletName).style.removeProperty('position')
                     recordGame('B', colorToCompare, h.id.substring(3), h.id.substring(3), -1, minutes + ":" + seconds, null, [-1, 'R', leftdir, rightdir, bottomdir, topdir])
-
                 }
             }
 
@@ -600,9 +716,11 @@ window.onload = function () {
         document.getElementById('rot1').removeEventListener('click', lefto)
         document.getElementById('rot2').removeEventListener('click', righto)
         document.getElementById('rot3').removeEventListener('click', moveo)
+        document.getElementById('rot4').removeEventListener('click', swapo)
         document.getElementById('rot1').hidden = true
         document.getElementById('rot2').hidden = true
         document.getElementById('rot3').hidden = true
+        document.getElementById('rot4').hidden = true
         document.getElementById('div' + ids).classList.remove('clicked')
         y = document.getElementById('div' + ids).classList
         if (y.contains('blue', 'Ricochets')) {
@@ -614,7 +732,7 @@ window.onload = function () {
                 topdir = x.borderTop
                 bottomdir = x.borderBottom
                 rightdir = x.borderRight
-                
+
                 if (bottomdir == '80px solid blue' && rightdir == '70px solid transparent') {
                     document.getElementById('blueR' + ids).style.removeProperty('border-right')
                     document.getElementById('blueR' + ids).style.borderLeft = '70px solid transparent'
@@ -629,7 +747,12 @@ window.onload = function () {
                     document.getElementById('blueR' + ids).style.borderBottom = '80px solid blue'
                 }
                 if (redoNumber == 0) {
-                    bulletOfCanon(ids)
+
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(ids)
+                    } else {
+                        bulletOfCanon(ids, 8);
+                    }
                 }
             } else if (dir == 'left') {
                 recordGame('R', 'blue', ids, ids, 1, minutes + ':' + seconds, 'l', null)
@@ -637,7 +760,7 @@ window.onload = function () {
                 topdir = x.borderTop
                 bottomdir = x.borderBottom
                 rightdir = x.borderRight
-                
+
                 if (bottomdir == '80px solid blue' && rightdir == '70px solid transparent') {
                     document.getElementById('blueR' + ids).style.removeProperty('border-bottom')
                     document.getElementById('blueR' + ids).style.borderTop = '80px solid blue'
@@ -652,12 +775,38 @@ window.onload = function () {
                     document.getElementById('blueR' + ids).style.borderRight = '70px solid transparent'
                 }
                 if (redoNumber == 0) {
-                    bulletOfCanon(ids)
+
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(ids)
+                    } else {
+                        bulletOfCanon(ids, 8);
+                    }
                 }
 
-            } else {
+            } else if (dir == 'move') {
                 arr = [1, -1, 8, -8, 9, -9, 7, -7]
                 greenPathFormation(parseInt(ids), arr)
+            } else {
+                document.getElementById('p2').innerText = 'Swapping'
+                tanks = document.getElementsByClassName('Tank')
+                canons = document.getElementsByClassName('Canon')
+                sricochets = document.getElementsByClassName('SRicochets')
+                ricochets = document.getElementsByClassName('Ricochets')
+                for (let i = 0; i < tanks.length; i++) {
+                    tanks[i].style.border = 'solid 5px green'
+                }
+                for (let i = 0; i < canons.length; i++) {
+                    canons[i].style.border = 'solid 5px green'
+                }
+                for (let i = 0; i < sricochets.length; i++) {
+                    sricochets[i].style.border = 'solid 5px green'
+                }
+                for (let i = 0; i < ricochets.length; i++) {
+                    if (parseInt(ricochets[i].id.substring(3)) != parseInt(ids)) {
+                        ricochets[i].style.border = 'solid 5px green'
+                    }
+                }
+                document.getElementById('div' + ids).classList.add('ToBeSwapped')
             }
 
         } else if (y.contains('red', 'Ricochets')) {
@@ -669,7 +818,7 @@ window.onload = function () {
                 topdir = x.borderTop
                 bottomdir = x.borderBottom
                 rightdir = x.borderRight
-                
+
                 if (bottomdir == '80px solid red' && rightdir == '70px solid transparent') {
                     document.getElementById('redR' + ids).style.removeProperty('border-right')
                     document.getElementById('redR' + ids).style.borderLeft = '70px solid transparent'
@@ -684,7 +833,11 @@ window.onload = function () {
                     document.getElementById('redR' + ids).style.borderBottom = '80px solid blue'
                 }
                 if (redoNumber == 0) {
-                    bulletOfCanon(ids)
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(ids)
+                    } else {
+                        bulletOfCanon(ids, 8);
+                    }
                 }
             } else if (dir == 'left') {
                 recordGame('R', 'red', ids, ids, 1, minutes + ':' + seconds, 'l', null)
@@ -692,7 +845,7 @@ window.onload = function () {
                 topdir = x.borderTop
                 bottomdir = x.borderBottom
                 rightdir = x.borderRight
-                
+
                 if (bottomdir == '80px solid red' && rightdir == '70px solid transparent') {
                     document.getElementById('redR' + ids).style.removeProperty('border-bottom')
                     document.getElementById('redR' + ids).style.borderTop = '80px solid blue'
@@ -707,11 +860,36 @@ window.onload = function () {
                     document.getElementById('redR' + ids).style.borderRight = '70px solid transparent'
                 }
                 if (redoNumber == 0) {
-                    bulletOfCanon(ids)
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(ids)
+                    } else {
+                        bulletOfCanon(ids, 8);
+                    }
                 }
-            } else {
+            } else if (dir == 'move') {
                 arr = [1, -1, 8, -8, 9, -9, 7, -7]
                 greenPathFormation(parseInt(ids), arr)
+            } else {
+                document.getElementById('p2').innerText = 'Swapping'
+                tanks = document.getElementsByClassName('Tank')
+                canons = document.getElementsByClassName('Canon')
+                sricochets = document.getElementsByClassName('SRicochets')
+                ricochets = document.getElementsByClassName('Ricochets')
+                for (let i = 0; i < tanks.length; i++) {
+                    tanks[i].style.border = 'solid 5px green'
+                }
+                for (let i = 0; i < canons.length; i++) {
+                    canons[i].style.border = 'solid 5px green'
+                }
+                for (let i = 0; i < sricochets.length; i++) {
+                    sricochets[i].style.border = 'solid 5px green'
+                }
+                for (let i = 0; i < ricochets.length; i++) {
+                    if (parseInt(ricochets[i].id.substring(3)) != parseInt(ids)) {
+                        ricochets[i].style.border = 'solid 5px green'
+                    }
+                }
+                document.getElementById('div' + ids).classList.add('ToBeSwapped')
             }
 
         }
@@ -727,34 +905,27 @@ window.onload = function () {
             document.getElementById('rot1').hidden = true
             document.getElementById('rot2').hidden = true
             document.getElementById('rot3').hidden = true
+            document.getElementById('rot4').hidden = true
         } else {
             remUnnecessary()
             document.getElementById('div' + params).classList.add('clicked')
             document.getElementById('rot1').hidden = false
             document.getElementById('rot2').hidden = false
             document.getElementById('rot3').hidden = false
+            document.getElementById('rot4').hidden = false
             window.scrollBy(0, window.innerHeight)
-            if (document.getElementById('div' + params).classList.contains('red')) {
-                document.getElementById('rot1').addEventListener('click', lefto = function () {
-                    rotationOfRicochets(params, 'left')
-                })
-                document.getElementById('rot2').addEventListener('click', righto = function () {
-                    rotationOfRicochets(params, 'right')
-                })
-                document.getElementById('rot3').addEventListener('click', moveo = function () {
-                    rotationOfRicochets(params, 'move')
-                })
-            } else {
-                document.getElementById('rot1').addEventListener('click', lefto = function () {
-                    rotationOfRicochets(params, 'left')
-                })
-                document.getElementById('rot2').addEventListener('click', righto = function () {
-                    rotationOfRicochets(params, 'right')
-                })
-                document.getElementById('rot3').addEventListener('click', moveo = function () {
-                    rotationOfRicochets(params, 'move')
-                })
-            }
+            document.getElementById('rot1').addEventListener('click', lefto = function () {
+                rotationOfRicochets(params, 'left')
+            })
+            document.getElementById('rot2').addEventListener('click', righto = function () {
+                rotationOfRicochets(params, 'right')
+            })
+            document.getElementById('rot3').addEventListener('click', moveo = function () {
+                rotationOfRicochets(params, 'move')
+            })
+            document.getElementById('rot4').addEventListener('click', swapo = function () {
+                rotationOfRicochets(params, 'swap')
+            })
 
         }
 
@@ -782,7 +953,11 @@ window.onload = function () {
                     document.getElementById('blueSR' + ids).style.transform = 'rotate(-45deg)'
                 }
                 if (redoNumber == 0) {
-                    bulletOfCanon(ids)
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(ids)
+                    } else {
+                        bulletOfCanon(ids, 8);
+                    }
                 }
 
             } else if (dir == 'left') {
@@ -794,7 +969,11 @@ window.onload = function () {
                     document.getElementById('blueSR' + ids).style.transform = 'rotate(-45deg)'
                 }
                 if (redoNumber == 0) {
-                    bulletOfCanon(ids)
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(ids)
+                    } else {
+                        bulletOfCanon(ids, 8);
+                    }
                 }
 
             } else {
@@ -813,7 +992,11 @@ window.onload = function () {
                     document.getElementById('redSR' + ids).style.transform = 'rotate(-45deg)'
                 }
                 if (redoNumber == 0) {
-                    bulletOfCanon(ids)
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(ids)
+                    } else {
+                        bulletOfCanon(ids, 8);
+                    }
                 }
 
             } else if (dir == 'left') {
@@ -825,7 +1008,11 @@ window.onload = function () {
                     document.getElementById('redSR' + ids).style.transform = 'rotate(-45deg)'
                 }
                 if (redoNumber == 0) {
-                    bulletOfCanon(ids)
+                    if (gameMode == 2 || gameMode == 3) {
+                        selectDir(ids)
+                    } else {
+                        bulletOfCanon(ids, 8);
+                    }
                 }
 
             } else {
@@ -879,7 +1066,81 @@ window.onload = function () {
         }
     }
 
+    function swapPosition(iniPos, finiPos) {
 
+        storeCurrDivHtml = []
+        storeCurrDivClass = []
+        storeCurrDivHtml.push(document.getElementById(iniPos).innerHTML)
+        for (let i = 0; i < document.getElementById(iniPos).classList.length; i++) {
+            storeCurrDivClass.push(document.getElementById(iniPos).classList[i])
+        }
+
+
+        storeSwapDivHtml = []
+        storeSwapDivClass = []
+        storeSwapDivHtml.push(document.getElementById(finiPos).innerHTML)
+        for (let i = 0; i < document.getElementById(finiPos).classList.length; i++) {
+            storeSwapDivClass.push(document.getElementById(finiPos).classList[i])
+        }
+
+        for (let i = 0; i < storeSwapDivClass.length; i++) {
+            document.getElementById(finiPos).classList.remove(storeSwapDivClass[i])
+        }
+        for (let i = 0; i < storeCurrDivClass.length; i++) {
+            document.getElementById(finiPos).classList.add(storeCurrDivClass[i])
+        }
+
+
+        document.getElementById(finiPos).innerHTML = storeCurrDivHtml[0]
+
+
+        for (let i = 0; i < storeCurrDivClass.length; i++) {
+            document.getElementById(iniPos).classList.remove(storeCurrDivClass[i])
+        }
+        for (let i = 0; i < storeSwapDivClass.length; i++) {
+            document.getElementById(iniPos).classList.add(storeSwapDivClass[i])
+        }
+
+
+        document.getElementById(iniPos).innerHTML = storeSwapDivHtml[0]
+
+        if (document.getElementById(iniPos).classList.contains('Ricochets')) {
+            if (document.getElementById(iniPos).classList.contains('blue')) {
+                document.getElementById('blueR' + finiPos.substring(3)).id = "blueR" + iniPos.substring(3)
+            } else {
+                document.getElementById('redR' + finiPos.substring(3)).id = "redR" + iniPos.substring(3)
+            }
+        } else if (document.getElementById(iniPos).classList.contains('SRicochets')) {
+            if (document.getElementById(iniPos).classList.contains('blue')) {
+                document.getElementById('blueSR' + finiPos.substring(3)).id = "blueSR" + iniPos.substring(3)
+            } else {
+                document.getElementById('redSR' + finiPos.substring(3)).id = "redSR" + iniPos.substring(3)
+            }
+        } else if (document.getElementById(iniPos).classList.contains('Tank')) {
+            document.getElementById(iniPos).style.borderLeft = '8px solid green'
+            document.getElementById(finiPos).style.removeProperty('border-left')
+        }
+
+
+
+        if (document.getElementById(finiPos).classList.contains('Ricochets')) {
+            if (document.getElementById(finiPos).classList.contains('blue')) {
+                document.getElementById('blueR' + iniPos.substring(3)).id = "blueR" + finiPos.substring(3)
+            } else {
+                document.getElementById('redR' + iniPos.substring(3)).id = "redR" + finiPos.substring(3)
+            }
+        } else if (document.getElementById(finiPos).classList.contains('SRicochets')) {
+            if (document.getElementById(finiPos).classList.contains('blue')) {
+                document.getElementById('blueSR' + iniPos.substring(3)).id = "blueSR" + finiPos.substring(3)
+            } else {
+                document.getElementById('redSR' + iniPos.substring(3)).id = "redSR" + finiPos.substring(3)
+            }
+        } else if (document.getElementById(finiPos).classList.contains('Tank')) {
+            document.getElementById(finiPos).style.borderLeft = '8px solid green'
+            document.getElementById(iniPos).style.removeProperty('border-left')
+        }
+
+    }
     let resume;
     let restart;
     let home;
@@ -1127,6 +1388,8 @@ window.onload = function () {
                 } else if (pyMove[pyMove.length - redoNumber] == -1) {
                     createRicochets(pyColor[pyColor.length - redoNumber] == 'blue' ? 'red' : 'blue', [parseInt(pyInitial[pyInitial.length - redoNumber])], pyBullet[pyBullet.length - redoNumber][2], pyBullet[pyBullet.length - redoNumber][5], pyBullet[pyBullet.length - redoNumber][4], pyBullet[pyBullet.length - redoNumber][3])
                     document.getElementById('undo').click()
+                } else if (pyMove[pyMove.length - redoNumber] == 2) {
+                    swapPosition('div' + pyInitial[pyInitial.length - redoNumber], 'div' + pyFinal[pyFinal.length - redoNumber])
                 }
 
             }
@@ -1150,8 +1413,6 @@ window.onload = function () {
                 pyMove = JSON.parse(pyMove)
                 pyTime = JSON.parse(pyTime)
                 pyName = JSON.parse(pyName)
-
-
 
                 if (pyColor[pyColor.length - redoNumber] == 'red') {
                     document.getElementById('s1').classList.remove('RedTurn')
@@ -1217,6 +1478,8 @@ window.onload = function () {
                     document.getElementById('div' + pyInitial[pyInitial.length - redoNumber]).classList.remove('Ricochets')
                     document.getElementById('div' + pyInitial[pyInitial.length - redoNumber]).classList.remove(pyColor[pyColor.length - redoNumber] == 'blue' ? 'red' : 'blue')
                     document.getElementById((pyColor[pyColor.length - redoNumber] == 'blue' ? 'red' : 'blue') + 'R' + pyInitial[pyInitial.length - redoNumber]).remove()
+                } else if (pyMove[pyMove.length - redoNumber] == 2) {
+                    swapPosition('div' + pyFinal[pyFinal.length - redoNumber], 'div' + pyInitial[pyInitial.length - redoNumber])
                 }
                 redoNumber -= 1
                 undoNumber += 1
@@ -1278,15 +1541,15 @@ window.onload = function () {
 
                 for (let i = 0; i < pyColor.length; i++) {
                     if (pyColor[i] == 'red') {
-                        playername = (pyName[i] == 'Ti' ? 'Titan' : pyName[i] == 'Ta' ? 'Tank' : pyName[i] == 'C' ? 'Canon' : pyName[i] == 'SR' ? 'Semi-Ricochet' : pyName[i] == 'B' ? 'Bullet' : 'Ricochets')
-                        playerrotation = (pyRotation[i] == 'l' ? 'left' : 'right')
-                        playermove = (pyMove[i] == 0 ? playername + ' moved from Plate ' + pyInitial[i] + ' to Plate ' + pyFinal[i] : pyMove[i] == 1 ? playername + ' rorates towards ' + playerrotation : pyMove[i] == -1 ? playername + ' kills blue Ricochets' : '')
+                        playername = (pyName[i] == 'Ti' ? 'Titan' : pyName[i] == 'Ta' ? 'Tank' : pyName[i] == 'C' ? 'Canon' : pyName[i] == 'SR' ? 'Semi-Ricochet' : pyName[i] == 'B' ? 'Bullet' : pyName[i] == 'R' ? 'Ricochets' : '')
+                        playerrotation = (pyRotation[i] == 'l' ? 'Clockwise' : 'Anti-Clockwise')
+                        playermove = (pyMove[i] == 0 ? playername + ' moved from Plate ' + pyInitial[i] + ' to Plate ' + pyFinal[i] : pyMove[i] == 1 ? playername + ' rorates towards ' + playerrotation : pyMove[i] == -1 ? playername + ' kills blue Ricochets' : pyMove[i] == 2 ? playername + ' swapped place ' : '')
                         document.getElementById('movesr').innerHTML += '<p>Move' + i + ': ' + playermove + '</p>'
                     }
                     if (pyColor[i] == 'blue') {
-                        playername = (pyName[i] == 'Ti' ? 'Titan' : pyName[i] == 'Ta' ? 'Tank' : pyName[i] == 'C' ? 'Canon' : pyName[i] == 'SR' ? 'Semi-Ricochet' : pyName[i] == 'B' ? 'bullet' : 'Ricochets')
-                        playerrotation = (pyRotation[i] == 'l' ? 'left' : 'right')
-                        playermove = (pyMove[i] == 0 ? playername + ' moved from Plate ' + pyInitial[i] + ' to Plate ' + pyFinal[i] : pyMove[i] == 1 ? playername + ' rorates towards ' + playerrotation : pyMove[i] == -1 ? playername + ' kills red Ricochets' : '')
+                        playername = (pyName[i] == 'Ti' ? 'Titan' : pyName[i] == 'Ta' ? 'Tank' : pyName[i] == 'C' ? 'Canon' : pyName[i] == 'SR' ? 'Semi-Ricochet' : pyName[i] == 'B' ? 'bullet' : pyName[i] == 'R' ? 'Ricochets' : '')
+                        playerrotation = (pyRotation[i] == 'l' ? 'Clockwise' : 'Anti-Clockwise')
+                        playermove = (pyMove[i] == 0 ? playername + ' moved from Plate ' + pyInitial[i] + ' to Plate ' + pyFinal[i] : pyMove[i] == 1 ? playername + ' rorates towards ' + playerrotation : pyMove[i] == -1 ? playername + ' kills red Ricochets' : pyMove[i] == 2 ? playername + ' swapped place ' : '')
                         document.getElementById('movesb').innerHTML += '<p>Move' + i + ': ' + playermove + '</p>'
                     }
                 }

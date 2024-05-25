@@ -139,7 +139,7 @@ body {
 .turn {
     width: 500px;
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
 }
 
 .rot {
