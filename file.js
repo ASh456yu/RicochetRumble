@@ -13,7 +13,7 @@ window.onload = function () {
     localStorage.removeItem('bullet')
 
     if (gameMode == 2 || gameMode == 3) {
-        // document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
+        document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
     }
 
     if (gameMode == null) {
@@ -1560,19 +1560,4 @@ window.onload = function () {
     }
     startCounting()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
