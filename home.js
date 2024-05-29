@@ -15,7 +15,19 @@ window.onload = function () {
         document.getElementById('hackerModePro').hidden = false
         document.getElementById('hackerModePro').addEventListener('click',function () {
             localStorage.setItem('home',3)
-            location.replace('./file.html')
+            document.getElementById('normalMode').hidden = true
+            document.getElementById('hackerMode').hidden = true
+            document.getElementById('singlePlay').hidden = false
+            document.getElementById('doublePlay').hidden = false
+            document.getElementById('singlePlay').addEventListener('click',function () {
+                localStorage.setItem('playmode',0);
+                location.replace('./file.html')
+            })
+            document.getElementById('doublePlay').addEventListener('click',function () {
+                localStorage.setItem('playmode',1);
+                location.replace('./file.html')
+            })
+            document.getElementById('hackerModePro').hidden = true
         })
     });
 
