@@ -7,7 +7,7 @@ window.onload = function () {
     
 
     if (gameMode == 2 || gameMode == 3||gameMode==4) {
-        // document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
+        document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
     }
     let sess = 0;
     let botCalled = true
