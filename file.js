@@ -7,12 +7,8 @@ window.onload = function () {
     
 
     if (gameMode == 2 || gameMode == 3||gameMode==4) {
-        document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
+        // document.getElementById('backMusic').innerHTML = '<audio autoplay loop src="audios/music.mpeg"></audio>'
     }
-    
-        
-        
-    
     let sess = 0;
     let botCalled = true
     if (gameMode == null) {
@@ -44,8 +40,94 @@ window.onload = function () {
     }
     let playMode = 0;
     if (gameMode==3) {
-        playMode = parseInt(localStorage.getItem('playmode'))
+        playMode = parseInt(localStorage.getItem('playmode'));
+        if (playMode==1) {
+            player1 = JSON.parse(localStorage.getItem('player1'))
+            player2 = JSON.parse(localStorage.getItem('player2'))
+            player1Color = sess%2==1?'red':'blue';
+            player2Color = sess%2==1?'blue':'red';
+            if (player1.length>0) {
+                document.getElementById('wrapper1').hidden = false
+                document.getElementById('wrapper1').style.backgroundColor = player1Color;
+                document.getElementById('play1').addEventListener('click',function (e) {
+                    y = getEventTarget(e)
+                    if (!y.classList.contains('tooltipDiv')) {
+                        if (y.innerText=='OTS') {
+                            document.getElementsByClassName(player1Color+' Titan')[0].style.border = '5px solid green'
+                            if (y.classList.contains('sp1')) {
+                                document.getElementById('play1').removeChild(y)
+                            }else{
+                                document.getElementById('play1').removeChild(y.parentNode)
+                            }
+                            var a = document.getElementsByClassName('tooltipDiv')[0].style.top
+                            document.getElementsByClassName('tooltipDiv')[0].style.top = parseInt(parseInt(a.substring(0,a.length-1))+130)+'%'
+                        }else if (y.innerText=='TP') {
+                            z = document.getElementsByClassName(player2Color)
+                            for (let i = 0; i < z.length; i++) {
+                                if (!z[i].classList.contains('Titan')&&!z[i].classList.contains('Canon')&&!z[i].classList.contains('SRicochets')) {
+                                    document.getElementById(z[i].id).style.border = '5px solid brown'
+                                }
+                            }
+                            if (y.classList.contains('sp1')) {
+                                document.getElementById('play1').removeChild(y)
+                            }else{
+                                document.getElementById('play1').removeChild(y.parentNode)
+                            }
+                            var a = document.getElementsByClassName('tooltipDiv')[0].style.top
+                            document.getElementsByClassName('tooltipDiv')[0].style.top = parseInt(parseInt(a.substring(0,a.length-1))+130)+'%'
+                            document.getElementById('p2').innerText = 'Spell'
+                        }
+                        
+                    }
+                })
+                for (let i = 0; i < player1.length; i++) {
+                    document.getElementById('play1').innerHTML+='<div class="sp1"><p>'+player1[i]+'</p></div>'
+                }
+            }
+            if (player2.length>0) {
+                document.getElementById('wrapper2').hidden = false
+                
+                document.getElementById('wrapper2').style.backgroundColor = player2Color;
+                document.getElementById('play2').addEventListener('click',function (e) {
+                    y = getEventTarget(e)
+                    if (!y.classList.contains('tooltipDiv')) {
+                        if (y.innerText=='OTS') {
+                            document.getElementsByClassName(player2Color+' Titan')[0].style.border = '5px solid green'
+                            if (y.classList.contains('sp1')) {
+                                document.getElementById('play2').removeChild(y)
+                            }else{
+                                document.getElementById('play2').removeChild(y.parentNode)
+                            }
+                            var a = document.getElementsByClassName('tooltipDiv')[1].style.top
+                            document.getElementsByClassName('tooltipDiv')[1].style.top = parseInt(parseInt(a.substring(0,a.length-1))+130)+'%'
+                        }else if (y.innerText=='TP') {
+                            z = document.getElementsByClassName(player1Color)
+                            for (let i = 0; i < z.length; i++) {
+                                if (!z[i].classList.contains('Titan')&&!z[i].classList.contains('Canon')&&!z[i].classList.contains('SRicochets')) {
+                                    document.getElementById(z[i].id).style.border = '5px solid brown'
+                                }
+                            }
+                            if (y.classList.contains('sp1')) {
+                                document.getElementById('play2').removeChild(y)
+                            }else{
+                                document.getElementById('play2').removeChild(y.parentNode)
+                            }
+                            var a = document.getElementsByClassName('tooltipDiv')[1].style.top
+                            document.getElementsByClassName('tooltipDiv')[1].style.top = parseInt(parseInt(a.substring(0,a.length-1))+130)+'%'
+                            document.getElementById('p2').innerText = 'Spell'
+                        }
+                        
+                    }
+                })
+                for (let i = 0; i < player2.length; i++) {
+                    document.getElementById('play2').innerHTML+='<div class="sp1"><p>'+player2[i]+'</p></div>'
+                }
+            }
+        }
     }
+    localStorage.removeItem('playmode')
+    localStorage.removeItem('player1')
+    localStorage.removeItem('player2')
     let lefto;
     let righto;
     let moveo;
@@ -67,25 +149,39 @@ window.onload = function () {
     for (let i = 0; i < 64; i++) {
         const htmlString = '<div class="div2" id="div' + parseInt(i + 1) + '"></div>';
         targetElement.insertAdjacentHTML('beforeend', htmlString);
-
-        document.getElementsByClassName('div2')[i].addEventListener('click', function () {
+    }
+    function getEventTarget(e) {
+        e = e || document.event;
+        return e.target || e.srcElement;
+    }
+    let tempStore;
+    document.getElementById('div').addEventListener('click',function (e) {
+        y = getEventTarget(e)
+        if (y.parentNode.classList.contains('Ricochets')||y.parentNode.classList.contains('SRicochets')||y.parentNode.classList.contains('Titan')||y.parentNode.classList.contains('Tank')||y.parentNode.classList.contains('Canon')) {
+            y = y.parentNode
+        }
+        if (y.classList.contains('div2')) {
             if (document.getElementById('p2').innerText == 'Nothing') {
-                if ((document.getElementById('div' + parseInt(i + 1)).classList.contains('red') && document.getElementById('s1').innerText == 'Red') || (document.getElementById('div' + parseInt(i + 1)).classList.contains('blue') && document.getElementById('s1').innerText == 'Blue') || document.getElementById('div' + parseInt(i + 1)).classList.contains('green')) {
+                
+                if ((y.classList.contains('red') && document.getElementById('s1').innerText == 'Red') || (y.classList.contains('blue') && document.getElementById('s1').innerText == 'Blue') || y.classList.contains('green')) {
                     actual = true
-                    if (document.getElementById('div' + parseInt(i + 1)).innerText == 'Titan' || document.getElementById('div' + parseInt(i + 1)).innerText == 'Tank') {
-                        pathOfTitanAndTank(parseInt(i + 1));
-                    } else if (document.getElementById('div' + parseInt(i + 1)).innerText == 'Canon') {
-                        pathOfCanon(parseInt(i + 1));
-                    } else if (document.getElementById('div' + parseInt(i + 1)).classList.contains('Ricochets')) {
-                        pathOfRicochets(parseInt(i + 1));
-                    } else if (document.getElementById('div' + parseInt(i + 1)).classList.contains('SRicochets')) {
-                        pathOfSRicochets(parseInt(i + 1));
+                    
+                    tempStore = y
+                    if (y.classList.contains('Titan') || y.classList.contains('Tank')) {
+                        pathOfTitanAndTank(parseInt(y.id.substring(3)));
+                    } else if (y.classList.contains('Canon')) {
+                        pathOfCanon(parseInt(y.id.substring(3)));
+                    } else if (y.classList.contains('Ricochets')) {
+                        pathOfRicochets(parseInt(y.id.substring(3)));
+                    } else if (y.classList.contains('SRicochets')) {
+                        pathOfSRicochets(parseInt(y.id.substring(3)));
                     }
-                    const x1 = document.getElementById('div' + parseInt(i + 1)).classList;
-                    if (x1.contains('green')) {
-                        greenPath(parseInt(i + 1));
+                    y = tempStore
+                    if (y.classList.contains('green')) {
+                        greenPath(parseInt(y.id.substring(3)));
                     }
                 } else {
+                    showMessage('Notice: Now '+document.getElementById('s1').innerText+' Player"s Turn')
                     actual = false
                     greenList = document.getElementsByClassName('green');
                     let l = []
@@ -114,11 +210,11 @@ window.onload = function () {
                         document.getElementById('rot2').hidden = true
                         document.getElementById('rot3').hidden = true
                     }
-
+            
                 }
-            } else if (document.getElementById('p2').innerText == 'Swapping') {
-                if (document.getElementById('div' + parseInt(i + 1)).style.border == '5px solid green') {
-                    currId = 'div' + parseInt(i + 1)
+            }else if (document.getElementById('p2').innerText == 'Swapping') {
+                if (y.style.border == '5px solid green') {
+                    currId = y.id
                     swappedElementId = document.getElementsByClassName('ToBeSwapped')[0].id
                     swapPosition(currId, swappedElementId)
                     document.getElementById(currId).classList.remove('ToBeSwapped')
@@ -134,7 +230,7 @@ window.onload = function () {
                     ricochets = document.getElementsByClassName('Ricochets')
                     for (let i = 0; i < tanks.length; i++) {
                         tanks[i].style.removeProperty('border')
-                        tanks[i].style.borderLeft = '8px solid green'
+                        tanks[i].style.borderLeft = '8px solid yellowgreen'
                     }
                     for (let i = 0; i < canons.length; i++) {
                         canons[i].style.removeProperty('border')
@@ -153,11 +249,39 @@ window.onload = function () {
                             bulletOfCanon(currId.substring(3), 8);
                         }
                     }
+                }else{
+                    showMessage('Please select to be swapped block')
                 }
+            }else if (document.getElementById('p2').innerText == 'Spell') {
+                if (document.getElementById(z[i].id).style.border == '5px solid green') {
+                    y.innerHTML += '<p class="TPspell">P</p>'
+                    if (document.getElementById('s1').innerText=='Red') {
+                        colorOf = 'blue'
+                    }else{
+                        colorOf = 'red'
+                    }
+                    z = document.getElementsByClassName(colorOf)
+                    for (let i = 0; i < document.getElementsByClassName(colorOf).length; i++) {
+                        if (!z[i].classList.contains('Titan')) {
+                            document.getElementById(z[i].id).style.removeProperty('border')
+                        }
+                        if (z[i].classList.contains('Tank')) {
+                            document.getElementById(z[i].id).style.borderLeft = '8px solid yellowgreen'
+                        }
+                    }
+                    document.getElementById('p2').innerText = 'Nothing'
+                } else {
+                    showMessage('Please Enchant The Spell')
+                }
+                
+            }else{
+                showMessage('Wait for bullet to reach end')
             }
-        });
-    }
-
+        }else if(y.id=='div'){
+            showMessage('Please Select Shown Blocks')
+        }
+        
+    })
     if ((gameMode==3||gameMode==4) && (sess%2==0)) {
         titanDivBlue = [6]
         tankDivBlue = [1, 8]
@@ -243,8 +367,6 @@ window.onload = function () {
         }
         
     }
-    
-
     
     if (gameMode == 2 || ((gameMode==3||gameMode==4) && sess%2==1)) {
         document.getElementById('div3').innerHTML += '<div id="redC" hidden><div id="redTop" style="border-top-left-radius: 10px;border-top-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 10px;height: 20px;background-color:black;"></div><div style = "display: grid;grid-template-columns: auto auto;"><div id="redLeft" style="border-top-left-radius: 10px;border-bottom-left-radius: 10px;width: 25px;height: 10px;background-color:black;"></div><div id="redRight" style="border-bottom-right-radius: 10px;border-top-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 25px;height: 10px;background-color:black;"></div></div><div id="redBottom" style="border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;position: relative;left: calc(50% - 5px);width: 10px;height: 20px;background-color:black;"></div></div>'
@@ -364,68 +486,64 @@ window.onload = function () {
             if (x[i].substring(6) != '') {
 
                 y = x[i].substring(6)
-                text = document.getElementById('div' + y).innerText
+                classname = document.getElementById('div' + y)
+                parentname = document.getElementById('div' + params)
 
-                if (text != '') {
-
-                    if (text == 'Titan') {
-                        col = document.getElementById('div' + y).classList.contains('red') ? 'red' : 'blue'
-                        recordGame('Ti', col, y, params, 0, minutes + ':' + seconds, null, null)
-                    } else if (text == 'Tank') {
-                        col = document.getElementById('div' + y).classList.contains('red') ? 'red' : 'blue'
-                        recordGame('Ta', col, y, params, 0, minutes + ':' + seconds, null, null)
-                        if (gameMode == 2 || gameMode == 3||gameMode==4) {
-                            document.getElementById('div' + params).style.borderLeft = '8px solid yellowgreen'
-                            document.getElementById('div' + y).style.removeProperty('border-left')
-                        }
-
-                    } else {
-                        col = document.getElementById('div' + y).classList.contains('red') ? 'red' : 'blue'
-                        recordGame('C', col, y, params, 0, minutes + ':' + seconds, null, null)
+                if (classname.classList.contains('Titan')) {
+                    col = classname.classList.contains('red') ? 'red' : 'blue'
+                    recordGame('Ti', col, y, params, 0, minutes + ':' + seconds, null, null)
+                    classname.classList.remove('Titan')
+                    parentname.classList.add('Titan')
+                } else if (classname.classList.contains('Tank')) {
+                    col = classname.classList.contains('red') ? 'red' : 'blue'
+                    recordGame('Ta', col, y, params, 0, minutes + ':' + seconds, null, null)
+                    if (gameMode == 2 || gameMode == 3||gameMode==4) {
+                        parentname.style.borderLeft = '8px solid yellowgreen'
+                        classname.style.removeProperty('border-left')
                     }
-                    document.getElementById('div' + params).innerHTML = document.getElementById('div' + y).innerHTML
-                    document.getElementById('div' + params).classList.add(text)
-                    document.getElementById('div' + y).classList.remove(text, 'clicked')
-                    document.getElementById('div' + y).innerHTML = ''
-                } else {
+                    classname.classList.remove('Tank')
+                    parentname.classList.add('Tank')
 
-                    if (document.getElementById('div' + y).classList.contains('SRicochets') && document.getElementById('div' + y).classList.contains('red')) {
-                        document.getElementById('redSR' + y).id = 'redSR' + params
-                        recordGame('SR', 'red', y, params, 0, minutes + ':' + seconds, null, null)
-                    } else if (document.getElementById('div' + y).classList.contains('SRicochets') && document.getElementById('div' + y).classList.contains('blue')) {
-                        document.getElementById('blueSR' + y).id = 'blueSR' + params
-                        recordGame('SR', 'blue', y, params, 0, minutes + ':' + seconds, null, null)
-                    } else if (document.getElementById('div' + y).classList.contains('Ricochets') && document.getElementById('div' + y).classList.contains('red')) {
-                        document.getElementById('redR' + y).id = 'redR' + params
-                        recordGame('R', 'red', y, params, 0, minutes + ':' + seconds, null, null)
-                    } else if (document.getElementById('div' + y).classList.contains('Ricochets') && document.getElementById('div' + y).classList.contains('blue')) {
-                        document.getElementById('blueR' + y).id = 'blueR' + params
-                        recordGame('R', 'blue', y, params, 0, minutes + ':' + seconds, null, null)
-                    }
-
-                    document.getElementById('div' + params).innerHTML = document.getElementById('div' + y).innerHTML
-                    document.getElementById('div' + y).innerHTML = ''
-                    if (document.getElementById('div' + y).classList.contains('Ricochets')) {
-                        document.getElementById('div' + y).classList.remove('Ricochets')
-                        document.getElementById('div' + params).classList.add('Ricochets')
-                    } else if (document.getElementById('div' + y).classList.contains('SRicochets')) {
-                        document.getElementById('div' + y).classList.remove('SRicochets')
-                        document.getElementById('div' + params).classList.add('SRicochets')
-                    }
-                    document.getElementById('div' + y).classList.remove('clicked')
+                } else if (classname.classList.contains('Canon')){
+                    col = classname.classList.contains('red') ? 'red' : 'blue'
+                    recordGame('C', col, y, params, 0, minutes + ':' + seconds, null, null)
+                    classname.classList.remove('Canon')
+                    parentname.classList.add('Canon')
+                }else if (classname.classList.contains('SRicochets') && classname.classList.contains('red')) {
+                    document.getElementById('redSR' + y).id = 'redSR' + params
+                    recordGame('SR', 'red', y, params, 0, minutes + ':' + seconds, null, null)
+                } else if (classname.classList.contains('SRicochets') && classname.classList.contains('blue')) {
+                    document.getElementById('blueSR' + y).id = 'blueSR' + params
+                    recordGame('SR', 'blue', y, params, 0, minutes + ':' + seconds, null, null)
+                } else if (classname.classList.contains('Ricochets') && classname.classList.contains('red')) {
+                    document.getElementById('redR' + y).id = 'redR' + params
+                    recordGame('R', 'red', y, params, 0, minutes + ':' + seconds, null, null)
+                } else if (classname.classList.contains('Ricochets') && classname.classList.contains('blue')) {
+                    document.getElementById('blueR' + y).id = 'blueR' + params
+                    recordGame('R', 'blue', y, params, 0, minutes + ':' + seconds, null, null)
                 }
-
-
-                document.getElementById('div' + y).style.removeProperty('background-color')
-
-                if (document.getElementById('div' + y).classList.contains('red')) {
-                    document.getElementById('div' + y).classList.remove('red')
-                    document.getElementById('div' + params).classList.add('red')
-                } else {
-                    document.getElementById('div' + y).classList.remove('blue')
-                    document.getElementById('div' + params).classList.add('blue')
+                
+                if (classname.classList.contains('Ricochets')) {
+                    classname.classList.remove('Ricochets')
+                    parentname.classList.add('Ricochets')
+                } else if (classname.classList.contains('SRicochets')) {
+                    classname.classList.remove('SRicochets')
+                    parentname.classList.add('SRicochets')
                 }
-                document.getElementById('div' + params).classList.remove('green', 'parent' + y)
+                    
+                parentname.innerHTML = classname.innerHTML
+                classname.innerHTML = ''
+                classname.classList.remove('clicked')
+                classname.style.removeProperty('background-color')
+
+                if (classname.classList.contains('red')) {
+                    classname.classList.remove('red')
+                    parentname.classList.add('red')
+                } else {
+                    classname.classList.remove('blue')
+                    parentname.classList.add('blue')
+                }
+                parentname.classList.remove('green', 'parent' + y)
 
                 z = document.getElementsByClassName('green')
                 l = []
@@ -617,7 +735,7 @@ window.onload = function () {
                 document.getElementById(bulletName).style.position = 'relative'
             }
             if (isExistant && (h.classList.contains(oppositeColor) && h.classList.contains('Tank'))) {
-                if (gameMode == 2 || gameMode == 3||gameMode==4) {
+                if (gameMode == 2 ||(gameMode==3 && playMode==0)|| gameMode==4) {
                     b1 = h.style.borderLeft
                     b2 = h.style.borderRight
                     b3 = h.style.borderTop
@@ -634,7 +752,29 @@ window.onload = function () {
                             botCalled=true
                         }
                     }
-                } else {
+                }else if (gameMode==3 && playMode==1) {
+                    if (h.querySelector("p")) {
+                        document.getElementById(bulletName).style.top = '-50px'
+                        document.getElementById(bulletName).style.position = 'relative'
+                    } else {
+                        b1 = h.style.borderLeft
+                        b2 = h.style.borderRight
+                        b3 = h.style.borderTop
+                        b4 = h.style.borderBottom
+                        if (!((b1 != '' && changeId == (1 * decider)) || (b2 != '' && changeId == (-1 * decider)) || (b3 != '' && changeId == (8 * decider)) || (b4 != '' && changeId == (-8 * decider)))) {
+                            isExistant = false
+                            document.getElementById('p2').innerText = 'Nothing'
+                            clearInterval(intervalId)
+                            restartCounting()
+                            startCounting()
+                            if (gameMode==3&&playMode==0&&botCalled) {
+                                bot()
+                            }else if (gameMode==3&&playMode==0&&!botCalled) {
+                                botCalled=true
+                            }
+                        }
+                    }
+                }else {
                     isExistant = false
                     document.getElementById('p2').innerText = 'Nothing'
                     clearInterval(intervalId)
@@ -648,12 +788,17 @@ window.onload = function () {
                 }
             }
             if (isExistant && h.classList.contains(oppositeColor) && h.classList.contains('Titan')) {
-                isExistant = false
-                window.alert(oppositeColor.toUpperCase() + ' Done')
-                document.getElementById('p2').innerText = 'Nothing'
-                clearInterval(intervalId)
-                stopCounting()
-                gameEnds(colorToCompare)
+                if (gameMode==3 && playMode==1 && h.style.border=='5px solid green') {
+                    h.style.removeProperty('border')
+                }else{
+                    isExistant = false
+                    window.alert(oppositeColor.toUpperCase() + ' Done')
+                    document.getElementById('p2').innerText = 'Nothing'
+                    clearInterval(intervalId)
+                    stopCounting()
+                    gameEnds(colorToCompare)
+                }
+                
             }
             if (isExistant && h.classList.contains('Ricochets') && h.classList.contains(colorToCompare)) {
                 p = document.getElementById(colorToCompare + 'R' + h.id.substring(3))
@@ -718,32 +863,37 @@ window.onload = function () {
                 }
             }
             if (isExistant && (gameMode == 2 || gameMode == 3||gameMode==4) && h.classList.contains('Ricochets') && h.classList.contains(oppositeColor)) {
+                if (h.querySelector('p')) {
+                    
+                }else {
 
-                p = document.getElementById(oppositeColor + 'R' + h.id.substring(3))
-                leftdir = p.style.borderLeft
-                rightdir = p.style.borderRight
-                bottomdir = p.style.borderBottom
-                topdir = p.style.borderTop
                 
-                if (((bottomdir == ('80px solid ' + oppositeColor) && rightdir == '70px solid transparent')||(leftdir == ('80px solid ' + oppositeColor) && topdir == '70px solid transparent')) && (changeId == (-1*decider)||changeId==(8*decider))) {
-                }else if (((bottomdir == ('80px solid ' + oppositeColor) && leftdir == '70px solid transparent')||(rightdir == ('80px solid ' + oppositeColor) && topdir == '70px solid transparent')) && (changeId == (1*decider)||changeId==(8*decider))) {
-                }else if (((topdir == ('80px solid ' + oppositeColor) && rightdir == '70px solid transparent')||(leftdir == ('80px solid ' + oppositeColor) && bottomdir == '70px solid transparent')) && (changeId == (-1*decider)||changeId==(-8*decider))) {
-                }else if (((topdir == ('80px solid ' + oppositeColor) && leftdir == '70px solid transparent')||(rightdir == ('80px solid ' + oppositeColor) && bottomdir == '70px solid transparent')) && (changeId == (1*decider)||changeId==(-8*decider))) {
-                }else{
-                    document.getElementById('p2').innerText = 'Nothing'
-                    clearInterval(intervalId)
-                    restartCounting()
-                    startCounting()
-                    document.getElementById('div' + (parseInt(x[0].id.substring(3)) + ids)).classList.remove('Ricochets')
-                    document.getElementById('div' + (parseInt(x[0].id.substring(3)) + ids)).classList.remove(oppositeColor)
-                    document.getElementById(oppositeColor + 'R' + h.id.substring(3)).remove()
-                    document.getElementById(bulletName).style.removeProperty('top')
-                    document.getElementById(bulletName).style.removeProperty('position')
-                    recordGame('B', colorToCompare, h.id.substring(3), h.id.substring(3), -1, minutes + ":" + seconds, null, [-1, 'R', leftdir, rightdir, bottomdir, topdir])
-                    if (gameMode==3&&playMode==0&&botCalled) {
-                        bot()
-                    }else if (gameMode==3&&playMode==0&&!botCalled) {
-                        botCalled=true
+                    p = document.getElementById(oppositeColor + 'R' + h.id.substring(3))
+                    leftdir = p.style.borderLeft
+                    rightdir = p.style.borderRight
+                    bottomdir = p.style.borderBottom
+                    topdir = p.style.borderTop
+                    
+                    if (((bottomdir == ('80px solid ' + oppositeColor) && rightdir == '70px solid transparent')||(leftdir == ('80px solid ' + oppositeColor) && topdir == '70px solid transparent')) && (changeId == (-1*decider)||changeId==(8*decider))) {
+                    }else if (((bottomdir == ('80px solid ' + oppositeColor) && leftdir == '70px solid transparent')||(rightdir == ('80px solid ' + oppositeColor) && topdir == '70px solid transparent')) && (changeId == (1*decider)||changeId==(8*decider))) {
+                    }else if (((topdir == ('80px solid ' + oppositeColor) && rightdir == '70px solid transparent')||(leftdir == ('80px solid ' + oppositeColor) && bottomdir == '70px solid transparent')) && (changeId == (-1*decider)||changeId==(-8*decider))) {
+                    }else if (((topdir == ('80px solid ' + oppositeColor) && leftdir == '70px solid transparent')||(rightdir == ('80px solid ' + oppositeColor) && bottomdir == '70px solid transparent')) && (changeId == (1*decider)||changeId==(-8*decider))) {
+                    }else{
+                        document.getElementById('p2').innerText = 'Nothing'
+                        clearInterval(intervalId)
+                        restartCounting()
+                        startCounting()
+                        document.getElementById('div' + (parseInt(x[0].id.substring(3)) + ids)).classList.remove('Ricochets')
+                        document.getElementById('div' + (parseInt(x[0].id.substring(3)) + ids)).classList.remove(oppositeColor)
+                        document.getElementById(oppositeColor + 'R' + h.id.substring(3)).remove()
+                        document.getElementById(bulletName).style.removeProperty('top')
+                        document.getElementById(bulletName).style.removeProperty('position')
+                        recordGame('B', colorToCompare, h.id.substring(3), h.id.substring(3), -1, minutes + ":" + seconds, null, [-1, 'R', leftdir, rightdir, bottomdir, topdir])
+                        if (gameMode==3&&playMode==0&&botCalled) {
+                            bot()
+                        }else if (gameMode==3&&playMode==0&&!botCalled) {
+                            botCalled=true
+                        }
                     }
                 }
             }
@@ -1281,6 +1431,19 @@ window.onload = function () {
 
     function restartGame() {
         localStorage.setItem('home', gameMode)
+        if (gameMode==3&&playMode==1) {
+            localStorage.setItem('playmode',1)
+            localStorage.setItem('player1',JSON.stringify(player1))
+            localStorage.setItem('player2',JSON.stringify(player2))
+            
+        }
+        if (gameMode==3) {
+            if (sess==1) {
+                sessionStorage.removeItem('count')
+            } else {
+                sessionStorage.setItem('count',sess-1)
+            }
+        }
         location.reload()
     }
 
@@ -1765,6 +1928,52 @@ window.onload = function () {
             }, 1000);
         }
         
+    }
+
+    if (gameMode==3) {
+        dragElement('wrapper1')
+        dragElement('wrapper2')
+    }
+    
+    function dragElement(idName) {
+        var pos1 = 0,pos2 = 0,pos3 = 0,pos4 = 0;
+        document.getElementById(idName).onmousedown = dragMouseDown;
+        document.getElementsByClassName('tooltipDiv')[0].style.top = (-200-130*(player1.length-1))+'%'
+        document.getElementsByClassName('tooltipDiv')[1].style.top = (-200-130*(player2.length-1))+'%'
+        function dragMouseDown(e) {
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+    
+        function elementDrag(e) {
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.getElementById(idName).style.top = (document.getElementById(idName).offsetTop - pos2) + "px";
+            document.getElementById(idName).style.left = (document.getElementById(idName).offsetLeft - pos1) + "px";
+        }
+    
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+    
+    function showMessage(msg) {
+        let toastBox = document.getElementById('toastBox');
+        let toast = document.createElement('div')
+        toast.classList.add('toast')
+        toast.innerHTML = msg
+        toastBox.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove()
+        }, 5000);
     }
 
     startCounting()
